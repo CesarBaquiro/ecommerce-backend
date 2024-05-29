@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Implementacion de las rutas
-app.use("/api/product", productRoutes);
+app.use("/api/products", productRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on Port http://localhost:${PORT}`);
