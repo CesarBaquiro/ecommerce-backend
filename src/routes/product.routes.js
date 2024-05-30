@@ -1,9 +1,12 @@
 import { Router } from "express";
+import __dirname from "../dirname.js"; // Importar __dirname
 
 const router = Router();
 
 const products = [];
 let id = 1;
+
+//Funcion para usar el archivo de persistencia
 
 //-----------------------GET------------------------
 router.get("/", (req, res, next) => {
@@ -128,7 +131,6 @@ router.put("/:pid", (req, res) => {
 
     // Actualizo el producto dentro del array
     products[Number(pid) - 1] = product;
-
     res.json({
         message: "User updated successfully",
     });
