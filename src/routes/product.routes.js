@@ -1,21 +1,17 @@
 import { Router } from "express";
-import __dirname from "../dirname.js"; // Importar __dirname
+import ProductManager from "../ProductManager.js";
 
 const router = Router();
 
-const products = [];
-let id = 1;
-
-//Funcion para usar el archivo de persistencia
-
 //-----------------------GET------------------------
-router.get("/", (req, res, next) => {
-    res.json(products);
+router.get("/", async (req, res) => {
+    res.json(await ProductManager.getProducts());
 });
 
 //----------------------GET producto por id------------------
-router.get("/:pid", (req, res) => {
+router.get("/:pid", async (req, res) => {
     const { pid } = req.params;
+    const product = await ProductManager.getProductById(pid);
 
     if (isNaN(Number(pid))) {
         return res.status(400).json({
@@ -23,81 +19,50 @@ router.get("/:pid", (req, res) => {
         });
     }
 
-    if (Number(pid) < 0 || Number(pid) > products.length) {
-        return res.status(400).json({
-            error: "No hay productos registrados con ese id",
+    if (!product) {
+        return res.status(404).json({
+            error: "No se encontró el producto",
         });
     }
 
-    res.json({
-        Producto: products[Number(pid) - 1],
-    });
+    res.json(product);
 });
 
 //-----------------------POST------------------------
-router.post("/", (req, res) => {
-    const {
-        title,
-        description,
-        code,
-        price,
-        status,
-        stock,
-        category,
-        thumbnails, //Es el unico campo que no es obligatorio
-    } = req.body;
-
-    const product = {
-        id: id,
-        title,
-        description,
-        code,
-        price,
-        status: true,
-        stock,
-        category,
-        thumbnails: thumbnails || [], // Asegurar que thumbnails no sea obligatorio, //Es el unico campo que no es obligatorio
-    };
-
-    //Se autoincrementa el valor de id
-    id++;
-
-    if (!title || !description) {
-        // next("Los campos username y password son requeridos")
-        return res.status(400).json({
-            error: "Los campos title y description son requeridos",
-        });
-    }
-
-    products.push(product);
-
-    res.status(201).json({
-        product: {
+router.post("/", async (req, res) => {
+    try {
+        const {
             title,
             description,
             code,
             price,
-            status,
             stock,
             category,
-            thumbnails,
-        },
-    });
+            thumbnails, // Es el único campo que no es obligatorio
+        } = req.body;
+
+        const product = {
+            title,
+            description,
+            code,
+            price,
+            stock,
+            category,
+            thumbnails: thumbnails || [], // Asegurar que thumbnails no sea obligatorio
+        };
+
+        await ProductManager.addProduct(product);
+
+        res.status(201).json({ product });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 });
 
 //-----------------------PUT------------------------
-router.put("/:pid", (req, res) => {
+router.put("/:pid", async (req, res) => {
     const { pid } = req.params;
-    const {
-        title,
-        description,
-        code,
-        price,
-        status,
-        stock,
-        category,
-        thumbnails, //Es el unico campo que no es obligatorio
-    } = req.body;
+    const updatedFields = req.body;
 
     if (isNaN(Number(pid))) {
         return res.status(400).json({
@@ -105,40 +70,24 @@ router.put("/:pid", (req, res) => {
         });
     }
 
-    if (Number(pid) < 0 || Number(pid) > products.length) {
-        return res.status(400).json({
-            error: "No hay productos registrados con ese id",
-        });
-    }
-    // Busco el producto a actualizar
-    const product = products.find((product) => product.id === Number(pid));
-
+    const product = await ProductManager.getProductById(pid);
     if (!product) {
         return res.status(404).json({
             message: "Product not found",
         });
     }
 
-    // Actualizo el producto
-    product.title = title || product.title;
-    product.description = description || product.description;
-    product.code = code || product.code;
-    product.price = price || product.price;
-    product.status = status === undefined ? product.status : status;
-    product.stock = stock || product.stock;
-    product.category = category || product.category;
-    product.thumbnails = thumbnails || product.thumbnails;
+    try {
+        await ProductManager.updateProduct(Number(pid), updatedFields);
 
-    // Actualizo el producto dentro del array
-    products[Number(pid) - 1] = product;
-    res.json({
-        message: "User updated successfully",
-    });
+        res.json({ message: "Product updated successfully" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 //----------------------DELETE----------------------
-
-router.delete("/:pid", (req, res) => {
+router.delete("/:pid", async (req, res) => {
     const { pid } = req.params;
 
     if (isNaN(Number(pid))) {
@@ -147,17 +96,14 @@ router.delete("/:pid", (req, res) => {
         });
     }
 
-    if (Number(pid) < 0 || Number(pid) > products.length) {
-        return res.status(400).json({
-            error: "No hay productos registrados con ese id",
+    try {
+        await ProductManager.deleteProduct(Number(pid));
+        res.json({
+            mensaje: `El producto de la posición ${pid} se ha eliminado`,
         });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    delete products[pid - 1];
-
-    res.json({
-        mensaje: `El producto de la posicion ${pid} se ha eliminado`,
-    });
 });
 
 export default router;
