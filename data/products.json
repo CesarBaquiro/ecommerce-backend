@@ -9,16 +9,5 @@
 		"thumbnails": [],
 		"id": 1,
 		"status": true
-	},
-	{
-		"title": "Cereal",
-		"description": "Cereal integral con miel y avena",
-		"code": "CER-001",
-		"price": 3500,
-		"stock": 150,
-		"category": "Food",
-		"thumbnails": [],
-		"id": 2,
-		"status": true
 	}
 ]
