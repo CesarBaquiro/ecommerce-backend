@@ -7,73 +7,77 @@ const router = Router();
 router.get("/:cid", async (req, res) => {
     const { cid } = req.params;
     const cart = await CartManager.getCartById(cid);
-    /**
- * 
-if (isNaN(Number(cid))) {
-    return res.status(400).json({
-        error: "El parámetro 'pid' debe ser un número",
-    });
-}
 
-if (Number(cid) < 0 || Number(cid) > carts.length) {
-    return res.status(400).json({
-            error: "No hay productos registrados con ese id",
+    if (isNaN(Number(cid))) {
+        return res.status(400).json({
+            error: "El parámetro 'cid' debe ser un número",
         });
     }
-    */
 
     res.json(cart);
 });
 
 //----------------------GET producto por id------------------
-router.get("/:cid/product/:pid", (req, res) => {
-    const { cid } = req.params;
-    const { pid } = req.params;
+router.get("/:cid/product/:pid", async (req, res) => {
+    const { cid, pid } = req.params;
+    const producto = await CartManager.getProductByIdInCartById(cid, pid);
 
     if (isNaN(Number(cid))) {
         return res.status(400).json({
-            error: "El parámetro 'cid' debe ser un número",
+            error: "El parámetro 'cid' debe ser un número",
         });
     } else if (isNaN(Number(pid))) {
         return res.status(400).json({
-            error: "El parámetro 'pid' debe ser un número",
+            error: "El parámetro 'pid' debe ser un número",
         });
     }
 
-    if (Number(cid) < 0 || Number(cid) > carts.length) {
-        return res.status(400).json({
-            error: "No hay carritos registrados con ese id",
-        });
-    }
-
-    if (Number(pid) < 0 || Number(pid) > carts.length) {
-        return res.status(400).json({
-            error: "No hay productos registrados con ese id",
-        });
-    }
-
-    res.json({
-        Carrito: carts[Number(cid) - 1],
-    });
+    res.json(producto);
 });
 
-//-----------------------POST------------------------
+//-----------------------POST para crear carrito------------------------
 router.post("/", async (req, res) => {
     try {
-        const {
-            product, //Id de l producto
-            quantity,
-        } = req.body;
+        const { product, quantity } = req.body;
 
-        const cart = {
-            //product contiene el id del producto, segun lo que se solicita en la consigna
-            product,
-            quantity,
-        };
+        if (typeof product !== "number" || typeof quantity !== "number") {
+            return res.status(400).json({
+                error: "El 'producto' y 'quantity' deben ser números",
+            });
+        }
 
-        await CartManager.addCart(cart);
+        await CartManager.addCart(product, quantity);
 
-        res.status(201).json({ cart });
+        res.status(201).json({ message: "Carrito creado exitosamente" });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+
+//-----------------------POST para agregar producto a carrito existente------------------------
+router.post("/:cid/product", async (req, res) => {
+    try {
+        const { cid } = req.params;
+        const { product, quantity } = req.body;
+
+        if (isNaN(Number(cid))) {
+            return res.status(400).json({
+                error: "El parámetro 'cid' debe ser un número",
+            });
+        }
+
+        if (typeof product !== "number" || typeof quantity !== "number") {
+            return res.status(400).json({
+                error: "El 'producto' y 'quantity' deben ser números",
+            });
+        }
+
+        const producto = { product, quantity };
+        await CartManager.addProductToCart(Number(cid), producto);
+
+        res.status(201).json({
+            message: "Producto agregado al carrito exitosamente",
+        });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

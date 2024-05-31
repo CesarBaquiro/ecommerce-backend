@@ -2,10 +2,9 @@ import fs from "fs";
 
 // Clase Cart
 class Cart {
-    constructor(producto, quantity) {
-        this.id = 0; //Id del carrito
-        this.producto = producto; //Id del producto
-        this.quantity = quantity;
+    constructor() {
+        this.id = 0; // Id del carrito
+        this.products = []; // Array de productos
     }
 }
 
@@ -37,25 +36,37 @@ class CartManager {
         }
     }
 
-    async addCart(cart) {
-        /** 
-         * 
-        if (!cart.product || cart.quantity) {
-            throw new Error("Todos los campos son obligatorios");
-        }
-        */
-
+    async addCart(product, quantity) {
+        const cart = new Cart();
         cart.id =
             this.carts.length > 0
                 ? this.carts[this.carts.length - 1].id + 1
                 : 1;
-
+        cart.products.push({ product, quantity });
         this.carts.push(cart);
         await this.saveCarts();
     }
 
     getCartById(idCart) {
         return this.carts.find((cart) => cart.id === Number(idCart));
+    }
+
+    getProductByIdInCartById(idCart, idProduct) {
+        const cart = this.carts.find((cart) => cart.id === Number(idCart));
+        if (cart) {
+            return cart.products.find(
+                (producto) => producto.product === Number(idProduct)
+            );
+        }
+        return null;
+    }
+
+    async addProductToCart(cartId, product) {
+        const cart = this.getCartById(cartId);
+        if (cart) {
+            cart.products.push(product);
+            await this.saveCarts();
+        }
     }
 }
 
