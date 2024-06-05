@@ -1,7 +1,7 @@
 import express from "express";
-import productRoutes from "./routes/product.routes.js";
-import cartRoutes from "./routes/cart.routes.js";
-import { logger } from "./middlewares/logger.js";
+import productRoutes from "./src/routes/product.routes.js";
+import cartRoutes from "./src/routes/cart.routes.js";
+import { logger } from "./src/middlewares/logger.js";
 
 const app = express();
 
