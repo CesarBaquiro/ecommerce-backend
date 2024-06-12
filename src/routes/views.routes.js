@@ -4,12 +4,15 @@ import ProductManager from "../ProductManager.js";
 const router = Router();
 
 //-----------------------GET------------------------
+router.get("/index", async (req, res) => {
+    res.render("index.hbs", { style: "/style.css" });
+});
 
 //--------------Get pantalla main
 router.get("/", async (req, res) => {
     try {
         const productos = await ProductManager.getProducts();
-        res.render("home.handlebars.hbs", { productos, style: "/style.css" });
+        res.render("home.hbs", { productos, style: "/style.css" });
     } catch (error) {
         console.error("Error fetching products:", error);
         res.status(500).send("Error fetching products");
@@ -20,7 +23,7 @@ router.get("/", async (req, res) => {
 router.get("/realtimeproducts", async (req, res) => {
     try {
         const productos = await ProductManager.getProducts();
-        res.render("realTimeProducts.handlebars.hbs", {
+        res.render("realTimeProducts.hbs", {
             productos,
             style: "/style.css",
         });

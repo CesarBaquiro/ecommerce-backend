@@ -6,6 +6,7 @@ import cartRoutes from "./src/routes/cart.routes.js";
 import viewsRoutes from "./src/routes/views.routes.js";
 import { logger } from "./src/middlewares/logger.js";
 import path from "path";
+import { Server } from "socket.io";
 
 const app = express();
 
@@ -37,6 +38,18 @@ app.use(logger);
 //app.use("/api/carts", cartRoutes);
 app.use("/api", viewsRoutes);
 
-app.listen(PORT, () => {
+const httpServer = app.listen(PORT, () => {
     console.log(`Server running on Port http://localhost:${PORT}`);
+});
+
+// Socket.io configuration
+const io = new Server(httpServer);
+
+io.on("connection", (socket) => {
+    console.log("Nuevo cliente contectado", socket.id);
+
+    // Esperamos el evento "message" enviado por el cliente
+    socket.on("message", (data) => {
+        console.log("Mensaje recibido", data);
+    });
 });
