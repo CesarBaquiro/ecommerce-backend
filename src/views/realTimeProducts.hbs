@@ -1,5 +1,29 @@
 <div>
     <h1>Lista de Productos con Web socket</h1>
+
+    <div>
+        <input type="text" placeholder="Ingrese un el codigo" id="codigo" />
+        <input
+            type="text"
+            placeholder="Ingrese un el nombre del producto"
+            id="titulo"
+        />
+        <input
+            type="text"
+            placeholder="Ingrese la descripción del producto"
+            id="descripcion"
+        />
+        <input type="text" placeholder="Ingrese el precio" id="precio" />
+        <input
+            type="text"
+            placeholder="Ingrese la cantidad de productos"
+            id="cantidad"
+        />
+        <input type="text" placeholder="Ingrese la categoria" id="categoria" />
+
+        <button id="enviar">Enviar</button>
+    </div>
+
     <ul>
         {{#each productos}}
             <li>
