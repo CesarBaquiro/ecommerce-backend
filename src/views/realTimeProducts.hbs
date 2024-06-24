@@ -1,0 +1,54 @@
+<div>
+    <h1>Lista de Productos con Web socket</h1>
+
+    <div>
+        <input type="text" placeholder="Ingrese un el codigo" id="codigo" />
+        <input
+            type="text"
+            placeholder="Ingrese un el nombre del producto"
+            id="titulo"
+        />
+        <input
+            type="text"
+            placeholder="Ingrese la descripción del producto"
+            id="descripcion"
+        />
+        <input type="text" placeholder="Ingrese el precio" id="precio" />
+        <input
+            type="text"
+            placeholder="Ingrese la cantidad de productos"
+            id="cantidad"
+        />
+        <input type="text" placeholder="Ingrese la categoria" id="categoria" />
+
+        <button id="enviar">Enviar</button>
+    </div>
+
+    <ul id="productos-lista">
+        {{#each productos}}
+            <li>
+                <h2>{{this.title}}</h2>
+                <p>{{this.description}}</p>
+                <p><strong>ID:</strong> {{this.id}}</p>
+                <p><strong>Código:</strong> {{this.code}}</p>
+                <p><strong>Precio:</strong> ${{this.price}}</p>
+                <p><strong>Stock:</strong> {{this.stock}}</p>
+                <p><strong>Categoría:</strong> {{this.category}}</p>
+                {{#if this.thumbnails.length}}
+                    <div>
+                        <strong>Thumbnails:</strong>
+                        <ul>
+                            {{#each this.thumbnails}}
+                                <li><img src="{{this}}" alt="Thumbnail" /></li>
+                            {{/each}}
+                        </ul>
+                    </div>
+                {{/if}}
+                <p><strong>Estado:</strong> {{this.status}}</p>
+            </li>
+        {{/each}}
+    </ul>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/main.js"></script>

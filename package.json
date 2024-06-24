@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "nodemon src/server.js"
+        "dev": "nodemon server.js"
     },
     "repository": {
         "type": "git",
@@ -20,6 +20,8 @@
     },
     "homepage": "https://github.com/CesarBaquiro/ecommerce-backend#readme",
     "dependencies": {
-        "express": "^4.19.2"
+        "express": "^4.19.2",
+        "express-handlebars": "^7.1.2",
+        "socket.io": "^4.7.5"
     }
 }
