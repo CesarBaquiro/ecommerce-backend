@@ -1,11 +1,18 @@
 import { Router } from "express";
 import ProductManager from "../ProductManager.js";
+import { productModel } from "../models/product.model.js";
 
 const router = Router();
 
 //-----------------------GET------------------------
 router.get("/", async (req, res) => {
-    res.json(await ProductManager.getProducts());
+    //res.json(await ProductManager.getProducts());
+    try {
+        const products = await productModel.find();
+        res.json(products);
+    } catch (error) {
+        res.statud(500).json({ error });
+    }
 });
 
 //----------------------GET producto por id------------------
