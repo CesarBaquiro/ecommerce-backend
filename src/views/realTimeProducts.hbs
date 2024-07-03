@@ -1,11 +1,12 @@
-<div>
-    <h1>Lista de Productos con Web socket</h1>
+<div class="container">
 
-    <div>
-        <input type="text" placeholder="Ingrese un el codigo" id="codigo" />
+    <h1>Lista de Productos con WebSocket</h1>
+
+    <div class="form-container">
+        <input type="text" placeholder="Ingrese el código" id="codigo" />
         <input
             type="text"
-            placeholder="Ingrese un el nombre del producto"
+            placeholder="Ingrese el nombre del producto"
             id="titulo"
         />
         <input
@@ -19,35 +20,56 @@
             placeholder="Ingrese la cantidad de productos"
             id="cantidad"
         />
-        <input type="text" placeholder="Ingrese la categoria" id="categoria" />
+        <input type="text" placeholder="Ingrese la categoría" id="categoria" />
 
         <button id="enviar">Enviar</button>
     </div>
 
-    <ul id="productos-lista">
-        {{#each productos}}
-            <li>
-                <h2>{{this.title}}</h2>
-                <p>{{this.description}}</p>
-                <p><strong>ID:</strong> {{this.id}}</p>
-                <p><strong>Código:</strong> {{this.code}}</p>
-                <p><strong>Precio:</strong> ${{this.price}}</p>
-                <p><strong>Stock:</strong> {{this.stock}}</p>
-                <p><strong>Categoría:</strong> {{this.category}}</p>
-                {{#if this.thumbnails.length}}
-                    <div>
-                        <strong>Thumbnails:</strong>
-                        <ul>
-                            {{#each this.thumbnails}}
-                                <li><img src="{{this}}" alt="Thumbnail" /></li>
-                            {{/each}}
-                        </ul>
-                    </div>
-                {{/if}}
-                <p><strong>Estado:</strong> {{this.status}}</p>
-            </li>
-        {{/each}}
-    </ul>
+    <div class="table-container">
+        <table id="productos-lista">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Categoría</th>
+                    <th>Imagen</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products}}
+                    <tr>
+                        <td id="code">{{this.code}}</td>
+                        <td>{{this.title}}</td>
+                        <td>{{this.description}}</td>
+                        <td>${{this.price}}</td>
+                        <td>{{this.stock}}</td>
+                        <td>{{this.category}}</td>
+                        <td>
+                            {{#if this.thumbnails.length}}
+                                <ul>
+                                    {{#each this.thumbnails}}
+                                        <li><img
+                                                src="{{this}}"
+                                                alt="Thumbnail"
+                                            /></li>
+                                    {{/each}}
+                                </ul>
+                            {{else}}
+                                No Thumbnails
+                            {{/if}}
+                        </td>
+                        <td>{{#if
+                                this.status
+                            }}Activo{{else}}Inactivo{{/if}}</td>
+                    </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>

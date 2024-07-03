@@ -16,8 +16,7 @@ const PORT = 8080;
 
 // Contectar a mongoose
 
-// Conexión a la base de datos
-//const dbURI = "mongodb://localhost:27017/ecommerceDB";
+// Conexión a la base de datos ecommerceDB
 
 mongoose
     .connect("mongodb://localhost:27017/ecommerceDB")
@@ -39,6 +38,10 @@ app.engine(
     handlebars.engine({
         extname: "hbs",
         defaultLayout: "main",
+        runtimeOptions: {
+            allowProtoPropertiesByDefault: true,
+            allowProtoMethodsByDefault: true,
+        },
     })
 );
 
