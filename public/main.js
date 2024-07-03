@@ -1,4 +1,6 @@
-document.getElementById("enviar").addEventListener("click", async () => {
+// Crear un nuevo producto
+
+document.getElementById("btn-send").addEventListener("click", async () => {
     const codigo = document.getElementById("codigo").value;
     const titulo = document.getElementById("titulo").value;
     const descripcion = document.getElementById("descripcion").value;
@@ -33,4 +35,40 @@ document.getElementById("enviar").addEventListener("click", async () => {
     } catch (error) {
         console.error("Error creando el producto:", error);
     }
+});
+
+// Borrar un producto
+
+document.addEventListener("DOMContentLoaded", () => {
+    const deleteButtons = document.querySelectorAll("#btn-delete");
+
+    deleteButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+            const id = button.getAttribute("data-id");
+
+            try {
+                const response = await fetch(`/api/products/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log("Producto eliminado:", result);
+
+                    // Recargar la lista de productos después de eliminar uno
+                    window.location.reload();
+                } else {
+                    console.error(
+                        "Error eliminando el producto:",
+                        await response.text()
+                    );
+                }
+            } catch (error) {
+                console.error("Error eliminando el producto:", error);
+            }
+        });
+    });
 });

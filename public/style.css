@@ -1,12 +1,10 @@
-* {
+body {
     background-color: #212121;
     color: #e8e8e8;
     font-family: "Roboto", sans-serif;
 }
 
 table {
-    color: black;
-    background-color: rgb(31 41 55);
     width: 100%;
     border-collapse: collapse;
 }
@@ -45,23 +43,27 @@ img {
 }
 
 .form-container {
-    margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Espacio entre los inputs y el botón */
+    padding: 20px;
+
+    border-radius: 8px; /* Bordes redondeados del contenedor */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra del contenedor */
 }
 
-.form-container input,
-.form-container button {
-    margin: 5px;
-    padding: 10px;
-    border-radius: 5px;
-    flex: 1 1 200px; /* Ajusta el tamaño de los inputs y button */
-    max-width: 300px; /* Establece un ancho máximo */
+.form-container input {
+    width: 100%; /* Ancho completo de los inputs */
+    max-width: 400px; /* Máximo ancho de los inputs */
+    padding: 10px; /* Espaciado interno de los inputs */
+    border: 1px solid #ccc; /* Borde de los inputs */
+    border-radius: 5px; /* Bordes redondeados de los inputs */
+    font-size: 16px; /* Tamaño de fuente de los inputs */
 }
 
-.form-container button {
-    flex: 0 1 auto; /* El botón no debe estirarse, tamaño automático */
+.form-container input::placeholder {
+    color: #888; /* Color del texto del placeholder */
 }
 
 input {
@@ -71,7 +73,8 @@ input {
     background-color: rgb(222, 229, 235);
 }
 
-button {
+/*Boton de enviar*/
+#btn-send {
     align-items: center;
     background-image: linear-gradient(144deg, #af40ff, #5b42f3 50%, #00ddeb);
     border: 0;
@@ -96,12 +99,12 @@ button {
     transition: all 0.3s;
 }
 
-button:active,
-button:hover {
+#btn-send:active,
+#btn-send:hover {
     outline: 0;
 }
 
-button span {
+#btn-send span {
     background-color: rgb(5, 6, 45);
     padding: 16px 24px;
     border-radius: 6px;
@@ -110,10 +113,73 @@ button span {
     transition: 300ms;
 }
 
-button:hover span {
+#btn-send:hover span {
     background: none;
 }
 
-button:active {
+#btn-send:active {
     transform: scale(0.9);
+}
+
+/*Boton de borrar*/
+#btn-delete {
+    width: 150px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background: red;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+    background: #e62222;
+}
+
+#btn-delete,
+#btn-delete span {
+    transition: 200ms;
+}
+
+#btn-delete .text {
+    transform: translateX(35px);
+    color: white;
+    font-weight: bold;
+}
+
+#btn-delete .icon {
+    position: absolute;
+    border-left: 1px solid #c41b1b;
+    transform: translateX(110px);
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#btn-delete svg {
+    width: 15px;
+    fill: #eee;
+}
+
+#btn-delete:hover {
+    background: #ff3636;
+}
+
+#btn-delete:hover .text {
+    color: transparent;
+}
+
+#btn-delete:hover .icon {
+    width: 150px;
+    border-left: none;
+    transform: translateX(0);
+}
+
+#btn-delete:focus {
+    outline: none;
+}
+
+#btn-delete:active .icon svg {
+    transform: scale(0.8);
 }
