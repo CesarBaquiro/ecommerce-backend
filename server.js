@@ -2,7 +2,6 @@ import express from "express";
 import handlebars from "express-handlebars";
 import __dirname from "./src/dirname.js";
 import productRoutes from "./src/routes/product.routes.js";
-import cartRoutes from "./src/routes/cart.routes.js";
 import viewsRoutes from "./src/routes/views.routes.js";
 import { logger } from "./src/middlewares/logger.js";
 import path from "path";
