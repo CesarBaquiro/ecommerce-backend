@@ -1,106 +1,83 @@
 import { Router } from "express";
-import ProductManager from "../ProductManager.js";
+import { productModel } from "../models/product.model.js";
 
 const router = Router();
 
 //-----------------------GET------------------------
 router.get("/", async (req, res) => {
-    res.json(await ProductManager.getProducts());
-});
-
-//----------------------GET producto por id------------------
-router.get("/:pid", async (req, res) => {
-    const { pid } = req.params;
-    const product = await ProductManager.getProductById(pid);
-
-    if (isNaN(Number(pid))) {
-        return res.status(400).json({
-            error: "El parámetro 'pid' debe ser un número",
-        });
-    }
-
-    if (!product) {
-        return res.status(404).json({
-            error: "No se encontró el producto",
-        });
-    }
-
-    res.json(product);
-});
-
-//-----------------------POST------------------------
-router.post("/", async (req, res) => {
+    //res.json(await ProductManager.getProducts());
     try {
-        const {
-            title,
-            description,
-            code,
-            price,
-            stock,
-            category,
-            thumbnails, // Es el único campo que no es obligatorio
-        } = req.body;
+        const products = await productModel.find();
+        res.json(products);
+    } catch (error) {
+        res.statud(500).json({ error });
+    }
+});
 
-        const product = {
-            title,
-            description,
-            code,
-            price,
-            stock,
-            category,
-            thumbnails: thumbnails || [], // Asegurar que thumbnails no sea obligatorio
-        };
+// ------------------- POST---------------------
 
-        await ProductManager.addProduct(product);
+router.post("/", async (req, res) => {
+    const {
+        title,
+        description,
+        code,
+        price,
+        stock,
+        category,
+        thumbnails,
+        status,
+    } = req.body;
+    const newProduct = new productModel({
+        title,
+        description,
+        code,
+        price,
+        stock,
+        category,
+        thumbnails,
+        status,
+    });
 
-        res.status(201).json({ product });
+    try {
+        const savedProduct = await newProduct.save();
+        res.status(201).json(savedProduct);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 });
 
-//-----------------------PUT------------------------
-router.put("/:pid", async (req, res) => {
-    const { pid } = req.params;
-    const updatedFields = req.body;
+//---------------------PUT------------------------
 
-    if (isNaN(Number(pid))) {
-        return res.status(400).json({
-            error: "El parámetro 'pid' debe ser un número",
-        });
-    }
-
-    const product = await ProductManager.getProductById(pid);
-    if (!product) {
-        return res.status(404).json({
-            message: "Product not found",
-        });
-    }
+router.put("/:id", async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
 
     try {
-        await ProductManager.updateProduct(Number(pid), updatedFields);
-
-        res.json({ message: "Product updated successfully" });
+        const updatedProduct = await productModel.findByIdAndUpdate(
+            id,
+            updates,
+            { new: true }
+        );
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+        res.json(updatedProduct);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(400).json({ error: error.message });
     }
 });
 
-//----------------------DELETE----------------------
-router.delete("/:pid", async (req, res) => {
-    const { pid } = req.params;
+//------------------------DELETE--------------------------
 
-    if (isNaN(Number(pid))) {
-        return res.status(400).json({
-            error: "El parámetro 'pid' debe ser un número",
-        });
-    }
+router.delete("/:id", async (req, res) => {
+    const { id } = req.params;
 
     try {
-        await ProductManager.deleteProduct(Number(pid));
-        res.json({
-            mensaje: `El producto de la posición ${pid} se ha eliminado`,
-        });
+        const deletedProduct = await productModel.findByIdAndDelete(id);
+        if (!deletedProduct) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+        res.json({ message: "Producto eliminado con éxito" });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
