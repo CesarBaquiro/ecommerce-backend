@@ -2,7 +2,7 @@ import passport from "passport";
 import jwt from "passport-jwt";
 import localStrategy from "passport-local";
 import { userModel } from "../models/user.model.js";
-import { JWT_SECRET } from "../utils/jwtFunctions.js";
+import { config } from "./config.js";
 import { verifyPassword } from "../utils/hashFunctions.js";
 
 const LocalStrategy = localStrategy.Strategy;
@@ -67,7 +67,7 @@ function initializePassport() {
         new JWTStrategy(
             {
                 jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-                secretOrKey: JWT_SECRET,
+                secretOrKey: config.JWT_SECRET,
             },
             async (payload, done) => {
                 try {

@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
+import { config } from "../config/config.js";
 
 // Palabra secreta de la encriptacion
-export const JWT_SECRET = "palabra-secreta";
+const { JWT_SECRET } = config;
 
 export function generateToken(payload) {
     const token = jwt.sign(payload, JWT_SECRET, {
