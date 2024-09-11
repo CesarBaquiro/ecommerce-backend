@@ -12,18 +12,16 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 import { initializePassport } from "./src/config/passport.config.js";
+import { config } from "./src/config/config.js";
 
 const app = express();
-
-// PORT
-const PORT = 8080;
 
 // Contectar a mongoose
 // Conexión a la base de datos ecommerceDB
 mongoose
-    .connect("mongodb://localhost:27017/ecommerceDB")
+    .connect(config.MONGO_URI)
     .then(() => {
-        console.log("DB conectada");
+        console.log("MongoDB conectada");
     })
     .catch((error) => {
         console.log(error);
@@ -66,8 +64,8 @@ app.use("/api", viewsRoutes);
 //app.use("/api/auth", authRoutes);
 app.use("/api/auth", authRoutes);
 
-const httpServer = app.listen(PORT, () => {
-    console.log(`Server running on Port http://localhost:${PORT}`);
+const httpServer = app.listen(config.PORT, () => {
+    console.log(`Server running on Port http://localhost:${config.PORT}`);
 });
 
 // Socket.io configuration
