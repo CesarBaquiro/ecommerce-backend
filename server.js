@@ -2,6 +2,7 @@ import express from "express";
 import handlebars from "express-handlebars";
 import __dirname from "./src/dirname.js";
 import productRoutes from "./src/routes/product.routes.js";
+import cartRoutes from "./src/routes/cart.routes.js";
 import viewsRoutes from "./src/routes/views.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import { logger } from "./src/middlewares/logger.js";
@@ -13,6 +14,10 @@ import cookieParser from "cookie-parser";
 import passport from "passport";
 import { initializePassport } from "./src/config/passport.config.js";
 import { config } from "./src/config/config.js";
+import {
+    authenticate,
+    authorizations,
+} from "./src/middlewares/authorization.middleware.js";
 
 const app = express();
 
@@ -60,8 +65,8 @@ app.use(logger);
 //Implementacion de las rutas
 app.use("/api/products", productRoutes);
 //app.use("/api/carts", cartRoutes);
+app.use("/cart", authenticate("jwt"), authorizations(["user"]), cartRoutes);
 app.use("/api", viewsRoutes);
-//app.use("/api/auth", authRoutes);
 app.use("/api/auth", authRoutes);
 
 const httpServer = app.listen(config.PORT, () => {
