@@ -23,14 +23,10 @@ const app = express();
 
 // Contectar a mongoose
 // Conexión a la base de datos ecommerceDB
-mongoose
-    .connect(config.MONGO_URI)
-    .then(() => {
-        console.log("MongoDB conectada");
-    })
-    .catch((error) => {
-        console.log(error);
-    });
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Conectado a MongoDB'))
+  .catch(err => console.error('Error al conectar a MongoDB', err));
+
 
 // App configuration
 app.use(express.json());

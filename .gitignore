@@ -1,2 +1,9 @@
 #Dependencies
 /node_modules
+
+# Ignorar datos de MongoDB
+/data
+
+# Ignorar archivos de logs
+/logs
+*.log
