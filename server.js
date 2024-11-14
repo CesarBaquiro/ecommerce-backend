@@ -5,6 +5,7 @@ import productRoutes from "./src/routes/product.routes.js";
 import cartRoutes from "./src/routes/cart.routes.js";
 import viewsRoutes from "./src/routes/views.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
+import mocksRoutes from "./src/routes/mocks.routes.js"
 import { logger } from "./src/middlewares/logger.js";
 import path from "path";
 import { Server } from "socket.io";
@@ -23,10 +24,9 @@ const app = express();
 
 // Contectar a mongoose
 // Conexión a la base de datos ecommerceDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Conectado a MongoDB'))
   .catch(err => console.error('Error al conectar a MongoDB', err));
-
 
 // App configuration
 app.use(express.json());
@@ -64,6 +64,7 @@ app.use("/api/products", productRoutes);
 app.use("/cart", authenticate("jwt"), authorizations(["user"]), cartRoutes);
 app.use("/api", viewsRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", mocksRoutes);
 
 const httpServer = app.listen(config.PORT, () => {
     console.log(`Server running on Port http://localhost:${config.PORT}`);

@@ -13,6 +13,10 @@ const userSchema = new Schema({
         enum: ["admin", "user"],
         default: "user",
     },
+    pets: {
+        type: [String],  // Lista de strings (puedes cambiar el tipo según lo necesites)
+        default: null,   // Por defecto será null si no se proporciona
+      }
     // Si usaramos carrito id
     // cartId: { type: Schema.Types.ObjectId, ref: "cart" },
 });
