@@ -19,6 +19,8 @@ import {
     authenticate,
     authorizations,
 } from "./src/middlewares/authorization.middleware.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swagerUiExpress from "swagger-ui-express";
 
 const app = express();
 
@@ -28,12 +30,27 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Conectado a MongoDB'))
   .catch(err => console.error('Error al conectar a MongoDB', err));
 
-// App configuration
-app.use(express.json());
-app.use(morgan("dev"));
-app.use(cookieParser());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.resolve(__dirname, "../public")));
+  // Swagger
+  const swaggerOptions = {
+    definition:{
+        openapi: '3.0.1',
+        info:{
+            title:'Documentacion del Ecommerce backend',
+            description:'API creada durante los 3 niveles de desarrollo backend de Coderhouse'
+        }
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+  }
+
+  const specs = swaggerJSDoc(swaggerOptions);
+  
+  // App configuration
+  app.use(express.json());
+  app.use(morgan("dev"));
+  app.use(cookieParser());
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.static(path.resolve(__dirname, "../public")));
+  app.use('/apidocs',swagerUiExpress.serve, swagerUiExpress.setup(specs))
 
 // Passport Config
 initializePassport();
@@ -51,6 +68,8 @@ app.engine(
         },
     })
 );
+
+
 
 app.set("view engine", "hbs");
 app.set("views", `${__dirname}/views`);

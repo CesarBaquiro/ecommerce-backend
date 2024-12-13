@@ -1,0 +1,11 @@
+paths:
+  /api/users/:
+    get:
+      summary: Obtiene todos los usuarios
+      tags:
+        - Users
+      responses:
+        "200":
+          descripction: Los usuarios fueron obtenidos satisfactoriamente de la base de datos
+        "500":
+          description:
