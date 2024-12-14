@@ -1,0 +1,225 @@
+paths:
+  /api/cart/{id}:
+    get:
+      summary: Obtiene un carrito por su ID
+      tags:
+        - Cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito a obtener
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Carrito obtenido exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: Carrito no encontrado
+        "500":
+          description: Error interno al obtener el carrito
+    delete:
+      summary: Elimina un carrito por su ID
+      tags:
+        - Cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito a eliminar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Carrito eliminado exitosamente
+        "500":
+          description: Error interno al eliminar el carrito
+
+  /api/cart:
+    post:
+      summary: Crea un nuevo carrito
+      tags:
+        - Cart
+      requestBody:
+        description: Datos del carrito a crear
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/CartProduct"
+      responses:
+        "201":
+          description: Carrito creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "500":
+          description: Error interno al crear el carrito
+
+  /api/cart/{id}/product:
+    post:
+      summary: Agrega un producto al carrito
+      tags:
+        - Cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+      requestBody:
+        description: Datos del producto a agregar
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                productId:
+                  type: string
+                  description: ID del producto a agregar
+                quantity:
+                  type: integer
+                  description: Cantidad del producto
+      responses:
+        "200":
+          description: Producto agregado exitosamente al carrito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: Producto o carrito no encontrado
+        "500":
+          description: Error interno al agregar el producto
+
+  /api/cart/{id}/product/{productId}:
+    delete:
+      summary: Elimina un producto del carrito
+      tags:
+        - Cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+        - name: productId
+          in: path
+          required: true
+          description: ID del producto a eliminar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Producto eliminado exitosamente del carrito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "404":
+          description: Producto o carrito no encontrado
+        "500":
+          description: Error interno al eliminar el producto
+
+  /api/cart/{id}/products:
+    delete:
+      summary: Elimina todos los productos del carrito
+      tags:
+        - Cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Todos los productos eliminados exitosamente del carrito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "500":
+          description: Error interno al eliminar los productos
+
+  /api/cart/{id}/purchase:
+    post:
+      summary: Confirma la compra de un carrito
+      tags:
+        - Cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Compra finalizada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  ticket:
+                    $ref: "#/components/schemas/Ticket"
+        "400":
+          description: Productos insuficientes en stock
+        "500":
+          description: Error interno al finalizar la compra
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID del carrito
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartProduct"
+    CartProduct:
+      type: object
+      properties:
+        product:
+          type: string
+          description: ID del producto
+        quantity:
+          type: integer
+          description: Cantidad del producto
+    Ticket:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Código único de la compra
+        purchase_datetime:
+          type: string
+          format: date-time
+          description: Fecha y hora de la compra
+        amount:
+          type: number
+          format: float
+          description: Monto total de la compra
+        purchaser:
+          type: string
+          description: ID del usuario que realizó la compra

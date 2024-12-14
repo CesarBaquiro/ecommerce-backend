@@ -5,7 +5,7 @@ import productRoutes from "./src/routes/product.routes.js";
 import cartRoutes from "./src/routes/cart.routes.js";
 import viewsRoutes from "./src/routes/views.routes.js";
 import authRoutes from "./src/routes/auth.routes.js";
-import mocksRoutes from "./src/routes/mocks.routes.js"
+import mocksRoutes from "./src/routes/mocks.routes.js";
 import { logger } from "./src/middlewares/logger.js";
 import path from "path";
 import { Server } from "socket.io";
@@ -16,8 +16,8 @@ import passport from "passport";
 import { initializePassport } from "./src/config/passport.config.js";
 import { config } from "./src/config/config.js";
 import {
-    authenticate,
-    authorizations,
+  authenticate,
+  authorizations,
 } from "./src/middlewares/authorization.middleware.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swagerUiExpress from "swagger-ui-express";
@@ -26,31 +26,33 @@ const app = express();
 
 // Contectar a mongoose
 // Conexión a la base de datos ecommerceDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Conectado a MongoDB'))
-  .catch(err => console.error('Error al conectar a MongoDB', err));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("Conectado a MongoDB"))
+  .catch((err) => console.error("Error al conectar a MongoDB", err));
 
-  // Swagger
-  const swaggerOptions = {
-    definition:{
-        openapi: '3.0.1',
-        info:{
-            title:'Documentacion del Ecommerce backend',
-            description:'API creada durante los 3 niveles de desarrollo backend de Coderhouse'
-        }
+// Swagger
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "Documentacion del Ecommerce backend",
+      description:
+        "API creada durante los 3 niveles de desarrollo backend de Coderhouse",
     },
-    apis: [`${__dirname}/docs/**/*.yaml`]
-  }
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`],
+};
 
-  const specs = swaggerJSDoc(swaggerOptions);
-  
-  // App configuration
-  app.use(express.json());
-  app.use(morgan("dev"));
-  app.use(cookieParser());
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.static(path.resolve(__dirname, "../public")));
-  app.use('/apidocs',swagerUiExpress.serve, swagerUiExpress.setup(specs))
+const specs = swaggerJSDoc(swaggerOptions);
+
+// App configuration
+app.use(express.json());
+app.use(morgan("dev"));
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.resolve(__dirname, "../public")));
+app.use("/apidocs", swagerUiExpress.serve, swagerUiExpress.setup(specs));
 
 // Passport Config
 initializePassport();
@@ -58,18 +60,16 @@ app.use(passport.initialize());
 
 // Handlebars configuration
 app.engine(
-    "hbs",
-    handlebars.engine({
-        extname: "hbs",
-        defaultLayout: "main",
-        runtimeOptions: {
-            allowProtoPropertiesByDefault: true,
-            allowProtoMethodsByDefault: true,
-        },
-    })
+  "hbs",
+  handlebars.engine({
+    extname: "hbs",
+    defaultLayout: "main",
+    runtimeOptions: {
+      allowProtoPropertiesByDefault: true,
+      allowProtoMethodsByDefault: true,
+    },
+  })
 );
-
-
 
 app.set("view engine", "hbs");
 app.set("views", `${__dirname}/views`);
@@ -86,17 +86,17 @@ app.use("/api/auth", authRoutes);
 app.use("/api", mocksRoutes);
 
 const httpServer = app.listen(config.PORT, () => {
-    console.log(`Server running on Port http://localhost:${config.PORT}`);
+  console.log(`Server running on Port http://localhost:${config.PORT}`);
 });
 
 // Socket.io configuration
 const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
-    console.log("Nuevo cliente contectado", socket.id);
+  console.log("Nuevo cliente contectado", socket.id);
 
-    // Esperamos el evento "message" enviado por el cliente
-    socket.on("message", (data) => {
-        console.log("Mensaje recibido", data);
-    });
+  // Esperamos el evento "message" enviado por el cliente
+  socket.on("message", (data) => {
+    console.log("Mensaje recibido", data);
+  });
 });
